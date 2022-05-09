@@ -24,6 +24,11 @@
 			{
 				"components": [
 					{
+						"internalType": "string",
+						"name": "key",
+						"type": "string"
+					},
+					{
 						"internalType": "address",
 						"name": "customer",
 						"type": "address"
@@ -194,6 +199,11 @@
 		],
 		"name": "rides",
 		"outputs": [
+			{
+				"internalType": "string",
+				"name": "key",
+				"type": "string"
+			},
 			{
 				"internalType": "address",
 				"name": "customer",

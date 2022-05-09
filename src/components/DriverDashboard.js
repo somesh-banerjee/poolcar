@@ -1,7 +1,7 @@
 import React, { useState,useEffect } from "react";
 import { ethers } from 'ethers'
 import Web3Modal from 'web3modal'
-import { Button, Item } from "semantic-ui-react";
+import { Button, Input, Item } from "semantic-ui-react";
 
 import {
   contractAddress
@@ -13,20 +13,14 @@ import ABI from "./../web3/abi.json"
 function App() {
     const [address,setAddress] = useState()
     const [rides,setRides] = useState([])
-    
-    const getRPC = async() => {
-      const web3Modal = new Web3Modal()
-      const connection = await web3Modal.connect()
-      const provider = new ethers.providers.Web3Provider(connection)
-      return provider
-    }
+    const [fee,setFee] = useState()
+    const [key,setKey] = useState()
 
     useEffect(()=>{
       const fetchRides = async() => {
         const web3Modal = new Web3Modal()
         const connection = await web3Modal.connect()
         const provider = new ethers.providers.Web3Provider(connection)
-        //const provider = getRPC()
         const signer = provider.getSigner()
         setAddress(await signer.getAddress())
         const Contract = new ethers.Contract(contractAddress, ABI, provider)
@@ -41,6 +35,24 @@ function App() {
       }
       fetchRides()
     },[])
+
+    const proposeYourFee = async(e) => {
+      e.preventDefault()
+      console.log(key)
+      console.log(fee)
+      const web3Modal = new Web3Modal()
+      const connection = await web3Modal.connect()
+      const provider = new ethers.providers.Web3Provider(connection)
+      const signer = provider.getSigner()
+      const Contract = new ethers.Contract(contractAddress, ABI, signer)
+      const val = ethers.utils.parseUnits(fee.toString(), "ether")
+      try {
+        let tx = await Contract.proposeRide(key,val)
+        console.log(tx)
+      } catch (er) {
+        console.log(er)
+      }
+    }
 
     return (
       <div className="driver-dashboard">
@@ -60,6 +72,11 @@ function App() {
                     }
                   </Item.Extra>
                 </Item.Content>
+                <Input focus placeholder='Your Fee in ETH' onChange={(e) => setFee(e.target.value)}></Input>
+                <Button onClick={(e)=>{
+                  setKey(i.key)
+                  proposeYourFee(e)
+                }}>Propose</Button>
               </Item>
             ))
           ) : "No Available Rides"
