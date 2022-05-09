@@ -1,7 +1,7 @@
 import React, { useState,useEffect } from "react";
 import { ethers } from 'ethers'
 import Web3Modal from 'web3modal'
-import { Button } from "semantic-ui-react";
+import { Button, Item } from "semantic-ui-react";
 
 import {
   contractAddress
@@ -44,7 +44,27 @@ function App() {
 
     return (
       <div className="driver-dashboard">
-        
+        <Item.Group divided>
+        {
+          rides.length>0 ? (
+            rides.map(i=>(
+              <Item key={i._id}>
+                <Item.Content>
+                  <Item.Header as='a'>{`${i.source} => ${i.destination}`}</Item.Header>
+                  <Item.Meta>{`Customer: ${i.customer}`}</Item.Meta>
+                  <Item.Extra>
+                    {
+                      i.driver === "0x0000000000000000000000000000000000000000" ? "No driver has proposed" : `${i.driver} has proposed`
+                    }<br/>{
+                      i.proposalStatus === "fasle" ? "Proposal is not yet accepted" : "Proposal is accepted"
+                    }
+                  </Item.Extra>
+                </Item.Content>
+              </Item>
+            ))
+          ) : "No Available Rides"
+        }
+        </Item.Group>
       </div>
     );
   }
