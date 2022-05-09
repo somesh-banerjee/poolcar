@@ -68,7 +68,7 @@ function App() {
                     {
                       i.driver === "0x0000000000000000000000000000000000000000" ? "No driver has proposed" : `${i.driver} has proposed`
                     }<br/>{
-                      i.proposalStatus === "fasle" ? "Proposal is not yet accepted" : "Proposal is accepted"
+                      i.proposalStatus === false ? "Proposal is not yet accepted" : "Proposal is accepted"
                     }
                   </Item.Extra>
                 </Item.Content>
