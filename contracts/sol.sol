@@ -13,6 +13,7 @@ contract CarPool{
         bool status;
     }
     mapping(string => Ride) public rides;
+    string[] public keys;
     address payable owner;
 
     constructor(){
@@ -27,6 +28,7 @@ contract CarPool{
     function newRide(string memory _key, string memory _src, string memory _dst) public {
         Ride memory obj = Ride(msg.sender,_src,_dst,0,address(0),false,false);
         rides[_key] = obj;
+        keys.push(_key);
     } 
 
     function proposeRide(string memory _key, uint256 _fee) public {
@@ -52,5 +54,22 @@ contract CarPool{
         address payable to = payable(rides[_key].driver);
         to.transfer(msg.value);
         rides[_key].status = true;
+    }
+
+    function availableRides() public view returns(Ride[] memory) {
+        uint256 n = keys.length;
+        uint256 c = 0;
+        for(uint256 i=0;i<n;i++){
+            if(rides[keys[i]].status==false){
+                c++;
+            }
+        }
+        Ride[] memory arr = new Ride[](c);
+        for(uint256 i=0;i<n;i++){
+            if(rides[keys[i]].status==false){
+                arr[i] = rides[keys[i]];
+            }
+        }
+        return arr;
     }
 }
