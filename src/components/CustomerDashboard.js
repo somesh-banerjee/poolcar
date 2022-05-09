@@ -14,6 +14,7 @@ import ABI from "./../web3/abi.json"
 function App() {
     const [rides,setRides] = useState([])
     const [key,setKey] = useState()
+    const [fee,setFee] = useState()
     const [reply,setReply] = useState()
     const [src,setSrc] = useState()
     const [dst,setDst] = useState()
@@ -82,6 +83,23 @@ function App() {
       }
     }
 
+    const paying = async(e) => {
+      e.preventDefault()
+      if(fee === undefined || key=== undefined) return
+      const web3Modal = new Web3Modal()
+      const connection = await web3Modal.connect()
+      const provider = new ethers.providers.Web3Provider(connection)
+      const signer = provider.getSigner()
+      const Contract = new ethers.Contract(contractAddress, ABI, signer)
+      //const val = ethers.utils.parseUnits(fee.toString(), "wei");
+      try {
+        let tx = await Contract.payment(key,{ value: fee})
+        console.log(tx)
+      } catch (er) {
+        console.log(er)
+      }
+    }
+
     return (
       <div className="customer-dashboard">
         <Form>
@@ -115,6 +133,11 @@ function App() {
                   setKey(i.key)
                   proposeYourFee(e)
                 }}>Reply</Button>
+                <Button onClick={(e)=>{
+                  setKey(i.key)
+                  setFee(i.fee)
+                  paying(e)
+                }}>Pay</Button>
               </Item>
             ))
           ) : "No Available Rides"
